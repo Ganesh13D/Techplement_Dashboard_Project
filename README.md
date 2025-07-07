@@ -1,11 +1,30 @@
 # Techplement_Dashboard_Project
 
+## Project Overview
+
+The **Techplement_Dashboard_Project** is a Spring Boot-based application that provides a **User Registration and Login System** with a REST API. It uses MySQL for persistent storage and follows best practices for secure password storage using BCrypt.
+
+---
+
+## Database Configuration
+
+Configure your `application.properties` file as follows:
+
+```
 spring.datasource.url=jdbc:mysql://localhost:3306/techplement_db
 spring.datasource.username=Ganesh
 spring.datasource.password=Ganesh
 spring.jpa.hibernate.ddl-auto=update
 spring.jpa.show-sql=true
+```
 
+---
+
+## Core Components
+
+### Entity
+
+```java
 package com.techplement.registration.entity;
 
 import javax.persistence.*;
@@ -28,7 +47,13 @@ public class User {
 
     // getters and setters
 }
+```
 
+---
+
+### DTOs
+
+```java
 package com.techplement.registration.dto;
 
 import javax.validation.constraints.Email;
@@ -61,6 +86,13 @@ public class UserLoginDto {
 
     // getters and setters
 }
+```
+
+---
+
+### Repository
+
+```java
 package com.techplement.registration.repository;
 
 import java.util.Optional;
@@ -70,6 +102,13 @@ import com.techplement.registration.entity.User;
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
 }
+```
+
+---
+
+### Exception Handling
+
+```java
 package com.techplement.registration.exception;
 
 public class UserAlreadyExistsException extends RuntimeException {
@@ -77,7 +116,9 @@ public class UserAlreadyExistsException extends RuntimeException {
         super(msg);
     }
 }
+```
 
+```java
 package com.techplement.registration.exception;
 
 import org.springframework.http.HttpStatus;
@@ -91,7 +132,13 @@ public class RestExceptionHandler {
         return ex.getMessage();
     }
 }
+```
 
+---
+
+### Service
+
+```java
 package com.techplement.registration.service;
 
 import java.util.Optional;
@@ -127,28 +174,13 @@ public class UserService {
         return opt.isPresent() && encoder.matches(rawPassword, opt.get().getPassword());
     }
 }
+```
 
-package com.techplement.registration.exception;
+---
 
-public class UserAlreadyExistsException extends RuntimeException {
-    public UserAlreadyExistsException(String msg) {
-        super(msg);
-    }
-}
+### Controller
 
-package com.techplement.registration.exception;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
-
-@RestControllerAdvice
-public class RestExceptionHandler {
-    @ExceptionHandler(UserAlreadyExistsException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public String handleUserExists(UserAlreadyExistsException ex) {
-        return ex.getMessage();
-    }
-}
+```java
 package com.techplement.registration.controller;
 
 import javax.validation.Valid;
@@ -181,7 +213,13 @@ public class UserController {
             : ResponseEntity.status(401).body("Invalid credentials");
     }
 }
+```
 
+---
+
+## Git Workflow Example
+
+```bash
 git init
 git remote add origin https://github.com/<your-username>/Techplement.git
 mkdir week1-tasks
@@ -189,3 +227,14 @@ mv * week1-tasks
 git add .
 git commit -m "Week1: User Registration System"
 git push -u origin master
+```
+
+---
+
+## Notes
+
+- Replace `<your-username>` in the git remote URL with your actual GitHub username.
+- Ensure MySQL is running and the `techplement_db` database exists.
+- This project uses Spring Boot, JPA, Hibernate, and BCrypt for password encryption.
+
+---
